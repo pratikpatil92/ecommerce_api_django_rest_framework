@@ -4,6 +4,8 @@ from rest_framework.mixins import ListModelMixin, CreateModelMixin, RetrieveMode
     UpdateModelMixin
 from .models import *
 from .serializers import *
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import generics
 
 
 class UserCreate(GenericAPIView, CreateModelMixin):
@@ -45,3 +47,12 @@ class GetFilterProduct(GenericAPIView, ListModelMixin):
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
+
+
+class ProductFilterByCategory(generics.ListAPIView):
+    serializer_class = ProductFilterSerializer
+    queryset = Product.objects.all()
+    filter_backends = (DjangoFilterBackend,)
+    filter_fields = ('category__id','category__name',)
+
+

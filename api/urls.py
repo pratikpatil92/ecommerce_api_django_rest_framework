@@ -7,4 +7,5 @@ urlpatterns = [
     path('get_filter_category/', GetFilterCategory.as_view()),
     path('get_all_product/', GetAllProduct.as_view()),
     path('get_filter_product/', GetFilterProduct.as_view()),
+    path('get_filter_product_by_category/', ProductFilterByCategory.as_view()),
 ]

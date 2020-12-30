@@ -3,16 +3,20 @@ from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 
 
+def upload_to(instance, filename):
+    return f'products2/{filename}'.format(filename=filename)
+
+
 class UserProfileManager(BaseUserManager):
     """Manager for user profile"""
 
     def create_user(self, email, first_name, last_name, password=None):
-        """create new user profile"""
+        """Create a new user profile"""
         if not email:
-            raise ValueError('User must be enter email address')
+            raise ValueError('Users must have an email address')
 
         email = self.normalize_email(email)
-        user = self.model(email=email, first_name=first_name, last_name=last_name)
+        user = self.model(email=email, first_name=first_name,last_name=last_name)
 
         user.set_password(password)
         user.save(using=self._db)
@@ -41,7 +45,7 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
     objects = UserProfileManager()
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['first_name','last_name']
+    REQUIRED_FIELDS = ['first_name', 'last_name']
 
     def get_full_name(self):
         name = self.first_name + " " + self.last_name
@@ -69,7 +73,7 @@ class Product(models.Model):
     price = models.IntegerField()
     description = models.TextField()
     brand = models.CharField(max_length=255)
-    image = models.ImageField(null=True,upload_to="products")
+    image = models.ImageField(null=True, upload_to=upload_to)
 
     def __str__(self):
         return self.title
@@ -100,13 +104,3 @@ class Order(models.Model):
 
     def __str__(self):
         return self.user.first_name
-
-
-
-
-
-
-
-
-
-

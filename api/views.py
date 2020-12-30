@@ -6,15 +6,20 @@ from .models import *
 from .serializers import *
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.settings import api_settings
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import AllowAny
+from .permissions import *
+from rest_framework import viewsets
 
 
-class UserCreate(GenericAPIView, CreateModelMixin):
-    """This class use to create new user"""
+class UserProfileViewset(viewsets.ModelViewSet):
+    """Handle create and update profile"""
+    serializer_class = UserProfileSerializer
     queryset = UserProfile.objects.all()
-    serializer_class = RegisterSerializer
-
-    def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (UpdateOwnProfile,)
 
 
 class GetAllCategory(GenericAPIView, ListModelMixin):
@@ -53,6 +58,9 @@ class ProductFilterByCategory(generics.ListAPIView):
     serializer_class = ProductFilterSerializer
     queryset = Product.objects.all()
     filter_backends = (DjangoFilterBackend,)
-    filter_fields = ('category__id','category__name',)
+    filter_fields = ('category__id', 'category__name',)
 
 
+class UserLoginApiView(ObtainAuthToken):
+    # """Handle creating user authentication tokens"""
+    renderer_classes = api_settings.DEFAULT_RENDERER_CLASSES

@@ -1,6 +1,8 @@
 from django.urls import path, include
 from .views import *
 from rest_framework.routers import DefaultRouter
+from rest_framework_jwt.views import obtain_jwt_token
+
 
 router = DefaultRouter()
 
@@ -17,4 +19,5 @@ urlpatterns = [
                   path('get_all_product/', GetAllProduct.as_view()),
                   path('get_filter_product/', GetFilterProduct.as_view()),
                   path('get_filter_product_by_category/', ProductFilterByCategory.as_view()),
+                  path('token-auth/', obtain_jwt_token)
               ]
